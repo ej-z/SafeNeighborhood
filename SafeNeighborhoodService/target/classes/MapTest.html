@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Safe Neighborhood</title>
+    <style>
+       #map {
+        height: 400px;
+        width: 100%;
+       }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  </head>
+  <body>    
+    <form>
+	  <div>
+	    <select name="drop_down" id="dropDownStates">
+            <option value="None" selected="Selected">Select State</option>
+        </select>
+        <select name="drop_down" id="dropDownTypes">
+            <option value="None" selected="Selected">Select Type</option>
+        </select>
+        <select name="drop_down" id="dropDownCategories" multiple="true">
+            <option value="None" selected="Selected">Select Categories</option>
+        </select>
+        <button id="submitBtn" type="button">Submit</button>
+   	  </div>	  
+	  
+	</form>
+
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <div id="map"></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
+    
+    <script>      
+      
+      $(document).ready(function(){
+      	getStates();
+      	getTypes();
+      	$("#submitBtn").bind("click", function(){submit()});
+      });
+      
+      var POINTS = []
+
+
+      function getStates()
+      {
+      	getData("getStates",null, populateStates);	
+      }
+
+      function getTypes()
+      {
+      	getData("getTypes",null, populateTypes);	
+      }
+
+      function getCategories(type)
+      {
+      	data = {type: type}
+      	getData("getCategories",data, populateCategories);	
+      }
+
+      function populateStates(states)
+      {
+      	$.each(states.sort(), function (key, value) {
+                  $("#dropDownStates").append($('<option></option>').val(value).html(value));
+              });
+      }
+      function populateTypes(types)
+      {
+      	$.each(types, function (key, value) {
+                  $("#dropDownTypes").append($('<option></option>').val(value).html(value));
+              });
+
+      	$('#dropDownTypes').change(function () {
+                  var type = $(this).val();
+                  getCategories(type);
+              });
+      }
+
+      function populateCategories(categories)
+      {
+      	$("#dropDownCategories").html('<option value="None" selected="Selected">Select Categories</option>');
+      	$.each(categories, function (key, value) {
+                  $("#dropDownCategories").append($('<option></option>').val(value).html(value));
+              });	
+      }
+
+      function submit()
+      {
+      	var states = $("#dropDownStates").val();
+      	var type = $("#dropDownTypes").val();
+      	var categories = $("#dropDownCategories").val().join();
+
+      	if(states != 'None' && type != 'None' && categories != 'None')
+      	{
+      		data = {states: states, type: type, categories: categories}
+      		getData("getData",data, drawMap);	
+      	}
+      }
+
+      function drawMap(data) {
+
+      	var points = []
+
+      	$.each(data, function (key, value) {
+
+      		var c = Number(value.count);
+
+      		while(c-- > 0)
+      		{
+      			points.push(new google.maps.LatLng(Number(value.latitude), Number(value.longitude)))
+      		}
+      	});
+
+      	POINTS = points;
+
+      	initMap();
+      }
+
+      function initMap() {
+              var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 4,
+                center: {lat: 37.090, lng: -95.712},
+                mapTypeId: 'terrain'
+              });
+
+      		heatmap = new google.maps.visualization.HeatmapLayer({
+                data: POINTS,
+                map: map
+              });
+            }
+
+
+      function getData(action, data, callback)
+      {
+      	$.ajax({
+      		  url: "http://localhost:8080/SafeNeighborhoodService/"+action,
+      		  type: "get",
+      		  data: data,
+      		  complete: function (xhr, status) {
+      		      if (status === 'error' || !xhr.responseText) {
+      		          console.log('error');
+      		      }
+      		      else {
+      		       	callback(xhr.responseJSON);
+      		      }
+      		  }
+      		});
+      }
+
+      
+    </script>
+     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl12iD48YV7PlODYkQKd2kboKnsUQi4yw&libraries=visualization&callback=initMap"
+  type="text/javascript"></script>
+    
+  </body>
+</html>

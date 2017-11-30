@@ -7,11 +7,23 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 @Path("")
 public class Index {
+	
+	@Path("/")
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public InputStream index() throws FileNotFoundException {		
+		
+		//File f = new File("C:\\Users\\Ejaz\\eclipse-workspace\\SafeNeighborhoodService\\SafeNeighborhoodService\\View\\MapTest.html");
+		File f = new File(getClass().getClassLoader().getResource("MapTest.html").getFile());
+		
+		//String[] data = Location.getInstance().getStates();	
+		return new FileInputStream(f);
+	}
 	
 	@Path("getStates")
 	@GET

@@ -5,12 +5,13 @@ import java.util.*;
 
 public class Location {
 
+	private static final String LOCATION_FILE = "locationdata.csv";
 	static HashMap<String, List<String>> StateZipMapping;
 	static HashMap<String, LatLong> ZipLatLongMapping;
 	
 	private Location()
 	{		
-		String csvFile = Config.getInstance().getProperty("geoinfo.path");
+		String csvFile = getClass().getClassLoader().getResource(LOCATION_FILE).getFile(); // Config.getInstance().getProperty("geoinfo.path");
 		BufferedReader br = null;
         String line = "";
         String cvsSplitBy = ",";

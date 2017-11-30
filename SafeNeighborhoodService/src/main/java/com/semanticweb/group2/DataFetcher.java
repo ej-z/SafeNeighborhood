@@ -18,11 +18,6 @@ public class DataFetcher {
 	String diseaseDataset = Config.getInstance().getProperty("disease.dataset");
 	String disasterDataset = Config.getInstance().getProperty("disaster.dataset");
 	
-	Model _fire = null;
-	Model _crime = null;
-	Model _disaster= null;
-	Model _disease= null;
-	
 	private DataFetcher(){
 	}
 	
