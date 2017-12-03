@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript">
+	var txt = { 
+  
+  "location" : [
+    {
+    	"loc": "85281",
+    	'type': "fire",
+      "subtype" : "wildfire",
+      "count" : 50
+    },
+     {
+    	"loc": "85283",
+    	'type': "fire",
+      "subtype" : "wildfire",
+      "count" : 30
+    },
+     {
+    	"loc": "85281",
+    	'type': "disease",
+      "subtype" : "measels",
+      "count" : 50
+    },
+     {
+    	"loc": "85283",
+    	'type': "disease",
+      "subtype" : "measels",
+      "count" : 10
+    },
+    {
+    	"loc": "85281",
+    	'type': "disease",
+      "subtype" : "mumps",
+      "count" : 50
+    },
+     {
+    	"loc": "85283",
+    	'type': "disease",
+      "subtype" : "mumps",
+      "count" : 50
+    },
+    {
+    	"loc": "85281",
+    	'type': "crime",
+      "subtype" : "fire",
+      "count" : 50
+    },
+     {
+    	"loc": "85283",
+    	'type': "crime",
+      "subtype" : "fire",
+      "count" : 10
+    },
+     
+  ],
+  "place" : 
+  [
+  {
+  	"local": "85281"
+  },
+  {
+  	"local": "85283"
+  }
+
+  ]
+};
+window.onload = function () {
+	var dataPoints1 = [];
+	var dataPoints2 = [];
+	var dataPoints3 = [];
+	var dataPoints4 = [];
+	var dataPoints5 = [];
+	var dataPoints6 = [];
+	var dataPoints7 = [];
+	var dataPoints8 = [];
+	var loc1 = txt.place[0].local;
+	var loc2 = txt.place[1].local
+	for (var i = 0; i < txt.location.length; i++)
+	{
+    	if(txt.location[i].type == "fire" && txt.location[i].loc == loc1)
+    	{
+    		dataPoints1.push({
+    			label: txt.location[i].subtype,
+    			y: txt.location[i].count
+
+    		});
+           
+		}
+		if(txt.location[i].type == "fire" && txt.location[i].loc == loc2)
+    	{
+    		dataPoints2.push({
+    			label: txt.location[i].subtype,
+    			y: txt.location[i].count
+    			
+
+    		});
+           
+		}
+
+		if(txt.location[i].type == "disease" && txt.location[i].loc == loc1)
+    	{
+    		dataPoints3.push({
+    			label: txt.location[i].subtype,
+    			y: txt.location[i].count
+
+    		});
+           
+		}
+		if(txt.location[i].type == "disease" && txt.location[i].loc == loc2)
+    	{
+    		dataPoints4.push({
+    			label: txt.location[i].subtype,
+    			y: txt.location[i].count
+
+    		});
+           
+		}
+
+		if(txt.location[i].type == "natural" && txt.location[i].loc == loc1)
+    	{
+    		dataPoints5.push({
+    			label: txt.location[i].subtype,
+    			y: txt.location[i].count
+
+    		});
+           
+		}
+		if(txt.location[i].type == "natural" && txt.location[i].loc == loc2)
+    	{
+    		dataPoints6.push({
+    			label: txt.location[i].subtype,
+    			y: txt.location[i].count
+
+    		});
+           
+		}
+
+		if(txt.location[i].type == "crime" && txt.location[i].loc == loc1)
+    	{
+    		dataPoints7.push({
+    			label: txt.location[i].subtype,
+    			y: txt.location[i].count
+
+    		});
+           
+		}
+		if(txt.location[i].type == "crime" && txt.location[i].loc == loc2)
+    	{
+    		dataPoints8.push({
+    			label: txt.location[i].subtype,
+    			y: txt.location[i].count
+
+    		});
+           
+		}
+
+	}
+
+		var chart = new CanvasJS.Chart("chartContainer",
+		{
+		title:{
+			text: "Fire"
+		},
+		axisY:{
+			title:"count ",
+			interval: 20
+		},
+		data: [
+		{
+			type: "stackedColumn100",
+			legendText: loc1,
+			showInLegend: "true",
+			dataPoints: dataPoints1
+    	
+		},  {
+			type: "stackedColumn100",
+			legendText: loc2,
+			showInLegend: "true",
+			dataPoints: dataPoints2
+		}
+		]
+		});
+		chart.render();
+	
+
+	
+		var chart1  = new CanvasJS.Chart("chartContainer1",
+		{
+		title:{
+			text: "Disease Outbreak"
+		},
+		axisY:{
+			title:"count ",
+			interval: 20
+		},
+		data: [
+		{
+			type: "stackedColumn100",
+			legendText: loc1,
+			showInLegend: "true",
+			dataPoints: dataPoints3
+    	
+		},  {
+			type: "stackedColumn100",
+			legendText: loc2,
+			showInLegend: "true",
+			dataPoints: dataPoints4
+		}
+		]
+	});
+	chart1.render();
+
+
+	var chart2  = new CanvasJS.Chart("chartContainer2",
+	{
+		title:{
+			text: "Natural Disasters"
+		},
+		axisY:{
+			title:"count ",
+			valueFormatString: "#0.#,.",
+			interval: 20
+		},
+		data: [
+		{
+			type: "stackedColumn100",
+			legendText: loc1,
+			showInLegend: "true",
+			dataPoints: dataPoints5
+    	
+		},  {
+			type: "stackedColumn100",
+			legendText: loc2,
+			showInLegend: "true",
+			dataPoints: dataPoints6
+		}
+		]
+	});
+	chart2.render();
+
+
+
+	var chart3  = new CanvasJS.Chart("chartContainer3",
+	{
+		title:{
+			text: "Crime"
+		},
+		axisY:{
+			title:"count ",
+			vinterval: 20
+		},
+		data: [
+		{
+			type: "stackedColumn100",
+			legendText: loc1,
+			showInLegend: "true",
+			dataPoints: dataPoints7
+    	
+		},  {
+			type: "stackedColumn100",
+			legendText: loc2,
+			showInLegend: "true",
+			dataPoints: dataPoints8
+		}
+		]
+	});
+	chart3.render();
+}
+
+</script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></head>
+<body>
+<div id="chartContainer" style="height: 300px; width: 500px;"></div> 
+<br> <br>
+<div id="chartContainer1" style="height: 300px; width: 500px;"></div>
+<br> <br>
+<div id="chartContainer2" style="height: 300px; width: 500px;"></div>
+<br> <br>
+<div id="chartContainer3" style="height: 300px; width: 500px;"></div>
+</body>
+</html>
