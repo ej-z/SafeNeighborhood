@@ -1,7 +1,11 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script type="text/javascript">
+	
+	
 	var main = 
 	[
   {
@@ -63,142 +67,59 @@
             "y": 10
           }
         ]
+      },
+            {
+        "Location": "AA",
+        "Points": [
+          {
+            "label": "Arson",
+            "y": 10
+          },
+          {
+            "label": "Basic",
+            "y": 10
+          }
+        ]
       }
     ]
   }
 ]
 	window.onload = function () {
-	var fire = [];
-	var Natural = [];
-	var disease = [];
-	var crime =[]
-	var loc1 = txt.place[0].local;
-	var loc2 = txt.place[1].local
+
 	for(var i = 0; i < main.length;i++)
 	{
-		switch(main[i].Type){
-			case 'Fire':
-				fire = main[i].Data;
-				break;
+		var Data = []
+		for(var j = 0; j < main[i].Data.length;j++)
+		{
+		
+		Data.push({type: "stackedColumn100",
+					legendText: main[i].Data[j].Location,
+					showInLegend: "true",
+					dataPoints: main[i].Data[j].Points})
+		}
 
-			case 'Crime':
-				crime = main[i].Data;
-				break;
+		$('#chartContainer').append('<div id="chartContainer'+i+'" style="height: 300px; width: 500px;"></div><br> <br>')
 
-			case 'Natural':
-				Natural = main[i].Data;
-				break;
-
-			case 'Disease':
-				disease = main[i].Data;
-				break;
-	}
-
-
-
-
-		var chart = new CanvasJS.Chart("chartContainer",
+		var chart = new CanvasJS.Chart("chartContainer"+i,
 		{
 		title:{
-			text: "Fire"
+			text: main[i].Type
 		},
 		axisY:{
 			title:"count",
 			interval: 20
 		},
-		data:[
-		for(var i = 0; i < fire.length; i++)
-		{
-			type: "stackedColumn100",
-			legendText: fire[i].location;
-			showInLegend: "true"
-			dataPoints: fire[i].Points;
-		}
-		]
+		data:Data
 	});
 		
 		chart.render();
-	
-
-	
-		var chart1  = new CanvasJS.Chart("chartContainer1",
-		{
-		title:{
-			text: "Disease Outbreak"
-		},
-		axisY:{
-			title:"count ",
-			interval: 20
-		},
-
-		data:[
-		for(var i = 0; i < disease.length; i++)
-		{
-			type: "stackedColumn100",
-			legendText: disease[i].location;
-			showInLegend: "true"
-			dataPoints: disease[i].Points;
-		}
-		]
-	});
-	chart1.render();
-
-
-	var chart2  = new CanvasJS.Chart("chartContainer2",
-	{
-		title:{
-			text: "Natural Disasters"
-		},
-		axisY:{
-			title:"count ",
-			valueFormatString: "#0.#,.",
-			interval: 20
-		},
-		data:[
-		for(var i = 0; i < disease.length; i++)
-		{
-			type: "stackedColumn100",
-			legendText: disease[i].location;
-			showInLegend: "true"
-			dataPoints: disease[i].Points;
-		}
-		]
-	});
-	chart2.render();
-
-
-
-	var chart3  = new CanvasJS.Chart("chartContainer3",
-	{
-		title:{
-			text: "Crime"
-		},
-		axisY:{
-			title:"count ",
-			vinterval: 20
-		},
-		data:[
-		for(var i = 0; i < disease.length; i++)
-		{
-			type: "stackedColumn100",
-			legendText: disease[i].location;
-			showInLegend: "true"
-			dataPoints: disease[i].Points;
-		}
-		]
-	});
-	chart3.render();
+	}
 }
 
+
 </script>
-<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></head>
+</head>
 <body>
-<div id="chartContainer" style="height: 300px; width: 500px;"></div> 
-<br> <br>
-<div id="chartContainer1" style="height: 300px; width: 500px;"></div>
-<br> <br>
-<div id="chartContainer2" style="height: 300px; width: 500px;"></div>
-<br> <br>
-<div id="chartContainer3" style="height: 300px; width: 500px;"></div>
+	<div id="chartContainer" />
 </body>
 </html>
