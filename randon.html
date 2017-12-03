@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript">
+	var fire = [];
+	var Natural = [];
+	var disease = [];
+	var crime =[];
+	var main = 
+	[
+  {
+    "Type": "Crime",
+    "Data": [
+      {
+        "Location": "AZ",
+        "Points": [
+          {
+            "label": "Murder",
+            "y": 10
+          },
+          {
+            "label": "Robbery",
+            "y": 10
+          }
+        ]
+      },
+      {
+        "Location": "CA",
+        "Points": [
+          {
+            "label": "Murder",
+            "y": 10
+          },
+          {
+            "label": "Robbery",
+            "y": 10
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Type": "Fire",
+    "Data": [
+      {
+        "Location": "AZ",
+        "Points": [
+          {
+            "label": "Arson",
+            "y": 10
+          },
+          {
+            "label": "Basic",
+            "y": 10
+          }
+        ]
+      },
+      {
+        "Location": "CA",
+        "Points": [
+          {
+            "label": "Arson",
+            "y": 10
+          },
+          {
+            "label": "Basic",
+            "y": 10
+          }
+        ]
+      }
+    ]
+  }
+]
+	window.onload = function () {
+
+	for(var i = 0; i < main.length;i++)
+	{
+		switch(main[i].Type){
+			case 'Fire':
+				fire = main[i].Data;
+				break;
+
+			case 'Crime':
+				crime = main[i].Data;
+				break;
+
+			case 'Natural':
+				Natural = main[i].Data;
+				break;
+
+			case 'Disease':
+				disease = main[i].Data;
+				break;
+		}
+	}
+
+	var fireData = [];
+
+	for(var i = 0; i < fire.length; i++)
+		{
+			fireData.push({type: "stackedColumn100",
+			legendText: fire[i].Location,
+			showInLegend: "true",
+			dataPoints: fire[i].Points})
+		}
+
+		var diseaseData = [];
+		for(var i = 0; i < disease.length; i++)
+		{
+			diseaseData.push({type: "stackedColumn100",
+			legendText: disease[i].Location,
+			showInLegend: "true",
+			dataPoints: disease[i].Points})
+		}
+
+		var crimeData = [];
+		for(var i = 0; i < crime.length; i++)
+		{
+			crimeData.push({type: "stackedColumn100",
+			legendText: crime[i].Location,
+			showInLegend: "true",
+			dataPoints: crime[i].Points})
+		}
+	
+
+		var naturalData = [];
+		for(var i = 0; i < Natural.length; i++)
+		{
+			naturalData.push({type: "stackedColumn100",
+			legendText: Natural[i].Location,
+			showInLegend: "true",
+			dataPoints: Natural[i].Points})
+		}
+
+
+		var chart = new CanvasJS.Chart("chartContainer",
+		{
+		title:{
+			text: "Fire"
+		},
+		axisY:{
+			title:"count",
+			interval: 20
+		},
+		data:fireData
+	});
+		
+		chart.render();
+	
+
+	
+		var chart1  = new CanvasJS.Chart("chartContainer1",
+		{
+		title:{
+			text: "Disease Outbreak"
+		},
+		axisY:{
+			title:"count ",
+			interval: 20
+		},
+
+		data: diseaseData
+	});
+	chart1.render();
+
+
+	var chart2  = new CanvasJS.Chart("chartContainer2",
+	{
+		title:{
+			text: "Natural Disasters"
+		},
+		axisY:{
+			title:"count ",
+			valueFormatString: "#0.#,.",
+			interval: 20
+		},
+		data: naturalData
+	});
+	chart2.render();
+
+
+
+	var chart3  = new CanvasJS.Chart("chartContainer3",
+	{
+		title:{
+			text: "Crime"
+		},
+		axisY:{
+			title:"count ",
+			vinterval: 20
+		},
+		data: crimeData
+	});
+	chart3.render();
+}
+
+</script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script></head>
+<body>
+<div id="chartContainer" style="height: 300px; width: 500px;"></div> 
+<br> <br>
+<div id="chartContainer1" style="height: 300px; width: 500px;"></div>
+<br> <br>
+<div id="chartContainer2" style="height: 300px; width: 500px;"></div>
+<br> <br>
+<div id="chartContainer3" style="height: 300px; width: 500px;"></div>
+</body>
+</html>
