@@ -1,16 +1,16 @@
 package com.semanticweb.group2;
 
-public class Data {
+public class HeatMapData {
 	
 	public String zipcode;
 	public String latitude;
 	public String longitude;
 	public String count;
 	
-	public Data()
+	public HeatMapData()
 	{}
 	
-	public Data(String zipcode, String latitude, String longitude, String count)
+	public HeatMapData(String zipcode, String latitude, String longitude, String count)
 	{
 		this.zipcode = zipcode;
 		this.latitude = latitude;

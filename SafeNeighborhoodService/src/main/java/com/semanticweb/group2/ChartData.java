@@ -1,17 +1,14 @@
 package com.semanticweb.group2;
 
+import java.util.List;
+
 public class ChartData {
 	
-	public String Location;
 	public String Type;
-	public String SubType;
-	public String Count;
+	public List<LocationData> Data;
 	
-	public ChartData(String location, String type, String subType, String count) {
-		Location = location;
+	public ChartData(String type) {
 		Type = type;
-		SubType = subType;
-		Count = count;
 	}
 
 }

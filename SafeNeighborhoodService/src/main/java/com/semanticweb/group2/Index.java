@@ -79,11 +79,11 @@ public class Index {
 	@Path("getHeatMapData")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getHeatMapData(@QueryParam("states") String locations,@QueryParam("type") String type,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
+	public Response getHeatMapData(@QueryParam("locations") String locations,@QueryParam("type") String type,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
 		
-		List<Data> data = null;
+		List<HeatMapData> data = null;
 		try {
-			data = DataFetcher.getInstance().fetchData(locations.split(","), type, categories);
+			data = DataFetcher.getInstance().fetchHeatMapData(locations, type, categories, isState);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -96,6 +96,13 @@ public class Index {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getChartData(@QueryParam("states") String locations,@QueryParam("type") String type,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
 		
-		return null;
+		List<ChartData> data = null;
+		try {
+			data = DataFetcher.getInstance().fetchChartData(locations, type, categories, isState);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return Response.ok(data).build();
 	}
 }
