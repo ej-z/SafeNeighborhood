@@ -18,10 +18,8 @@ public class Index {
 	@Produces(MediaType.TEXT_HTML)
 	public InputStream index() throws FileNotFoundException {		
 		
-		//File f = new File("C:\\Users\\Ejaz\\eclipse-workspace\\SafeNeighborhoodService\\SafeNeighborhoodService\\View\\MapTest.html");
 		File f = new File(getClass().getClassLoader().getResource("MapTest.html").getFile());
 		
-		//String[] data = Location.getInstance().getStates();	
 		return new FileInputStream(f);
 	}
 	
@@ -31,6 +29,15 @@ public class Index {
 	public Response getStates() {		
 		
 		String[] data = Location.getInstance().getStates();	
+		return Response.ok(data).build();
+	}
+	
+	@Path("getZipcodes")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getZipcodes(@QueryParam("state") String state) {		
+		
+		String[] data = Location.getInstance().getZipCodes(state);	
 		return Response.ok(data).build();
 	}
 	
@@ -69,18 +76,26 @@ public class Index {
 		return Response.ok(data).build();
 	}
 	
-	@Path("getData")
+	@Path("getHeatMapData")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getData(@QueryParam("states") String states,@QueryParam("type") String type,@QueryParam("categories") String categories) throws IOException {
+	public Response getHeatMapData(@QueryParam("states") String locations,@QueryParam("type") String type,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
 		
 		List<Data> data = null;
 		try {
-			data = DataFetcher.getInstance().fetchData(states.split(","), type, categories);
+			data = DataFetcher.getInstance().fetchData(locations.split(","), type, categories);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		return Response.ok(data).build();
+	}
+	
+	@Path("getChartData")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getChartData(@QueryParam("states") String locations,@QueryParam("type") String type,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
+		
+		return null;
 	}
 }
