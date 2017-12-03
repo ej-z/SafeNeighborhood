@@ -46,8 +46,8 @@ public class Index {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTypes() {		
 		
-		String[] CrimeCategories = {"Arson","DrugOffense","Murder","Rape","Theft"};
-		String[] FireCategories = {"Arson","Basic","Wildlands"};
+		String[] CrimeCategories = {"Arson_Crime","DrugOffense","Murder","Rape","Theft"};
+		String[] FireCategories = {"Arson_Fire","Basic","Wildlands"};
 		String[] DisasterCategories = {"Earthquake","Hurricane","Tsunami","Volcano"};
 		String[] DiseaseCategories = {"DIPHTHERIA","HEPATITIS_A","MEASELS","MUMPS","PERTUSSIS","POLIO","RUBELLA","SMALLPOX"};
 		List<TypeData> typeData = new ArrayList<TypeData>();
@@ -63,11 +63,11 @@ public class Index {
 	@Path("getHeatMapData")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getHeatMapData(@QueryParam("locations") String locations,@QueryParam("type") String type,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
+	public Response getHeatMapData(@QueryParam("locations") String locations,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
 		
 		List<HeatMapData> data = null;
 		try {
-			data = DataFetcher.getInstance().fetchHeatMapData(locations, type, categories, isState);
+			data = DataFetcher.getInstance().fetchHeatMapData(locations, categories, isState);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -78,11 +78,11 @@ public class Index {
 	@Path("getChartData")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getChartData(@QueryParam("states") String locations,@QueryParam("type") String type,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
+	public Response getChartData(@QueryParam("states") String locations,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
 		
 		List<ChartData> data = null;
 		try {
-			data = DataFetcher.getInstance().fetchChartData(locations, type, categories, isState);
+			data = DataFetcher.getInstance().fetchChartData(locations, categories, isState);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

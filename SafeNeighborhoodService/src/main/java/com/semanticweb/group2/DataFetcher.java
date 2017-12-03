@@ -30,39 +30,29 @@ public class DataFetcher {
         return single_instance;
     }
 	
-	public List<HeatMapData> fetchHeatMapData(String locations, String types, String categories, int isState)
+	public List<HeatMapData> fetchHeatMapData(String locations, String categories, int isState)
 	{
 		String[] Locations = locations.split(",");
-		String[] Types = types.split(",");
 		String[] Categories = categories.split(",");
-		List<HeatMapData> result = new ArrayList<HeatMapData>();
+		List<HeatMapData> result = new ArrayList<HeatMapData>();		
 		
-		for(int i = 0; i < Types.length; i++) {
-			String endpoint = buildEndpoint(Types[i]);
-			result.addAll(fetchHeatMapResults(endpoint, Locations, Categories[i].split("|"), isState));
-		}		
-		
-		return 	result;	
+		return fetchHeatMapResults(getEndpoint(), Locations, Categories, isState);
 	}
 	
-	public List<ChartData> fetchChartData(String locations, String types, String categories, int isState)
+	public List<ChartData> fetchChartData(String locations, String categories, int isState)
 	{
 		String[] Locations = locations.split(",");
-		String[] Types = types.split(",");
 		String[] Categories = categories.split(",");
 		List<ChartData> result = new ArrayList<ChartData>();
 		
-		for(int i = 0; i < Types.length; i++) {
-			String endpoint = buildEndpoint(Types[i]);
-			result.addAll(fetchChartResults(endpoint, Locations, Categories[i].split("|"), isState));
-		}		
-		
-		return 	result;	
+		return fetchChartResults(getEndpoint(), Locations, Categories, isState);
 	}
 	
-	private String buildEndpoint(String type)
+	private String getEndpoint()
 	{
-		if(type.equals("Crime"))
+		return fusekiServer+"/SafeNeighborhoodDataset/query";
+		
+		/*if(type.equals("Crime"))
 			return fusekiServer+"/"+crimeDataset+"/query";
 			
 		if(type.equals("Fire"))
@@ -74,7 +64,7 @@ public class DataFetcher {
 		if(type.equals("Disease"))
 			return fusekiServer+"/"+diseaseDataset+"/query";
 		
-		return null;
+		return null;*/
 	}	
 	
 	private String BuildFilter(String field, String[] filters)
