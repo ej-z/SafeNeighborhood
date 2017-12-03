@@ -46,36 +46,20 @@ public class Index {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTypes() {		
 		
-		String[] data = {"Crime","Fire","Disaster","Disease"};		
-		return Response.ok(data).build();
-	}
-	
-	@Path("getCategories")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getCategories(@QueryParam("type") String type) {		
-		
-		String[] data = null;	
 		String[] CrimeCategories = {"Arson","DrugOffense","Murder","Rape","Theft"};
 		String[] FireCategories = {"Arson","Basic","Wildlands"};
 		String[] DisasterCategories = {"Earthquake","Hurricane","Tsunami","Volcano"};
 		String[] DiseaseCategories = {"DIPHTHERIA","HEPATITIS_A","MEASELS","MUMPS","PERTUSSIS","POLIO","RUBELLA","SMALLPOX"};
+		List<TypeData> typeData = new ArrayList<TypeData>();
 		
-		if(type.equals("Crime"))
-			data = CrimeCategories;
-			
-		if(type.equals("Fire"))
-			data = FireCategories;
+		typeData.add(new TypeData("Crime", CrimeCategories));
+		typeData.add(new TypeData("Fire", FireCategories));
+		typeData.add(new TypeData("Disaster", DisasterCategories));
+		typeData.add(new TypeData("Disease", DiseaseCategories));
 		
-		if(type.equals("Disaster"))
-			data = DisasterCategories;
-		
-		if(type.equals("Disease"))
-			data = DiseaseCategories;
-		
-		return Response.ok(data).build();
+		return Response.ok(typeData).build();
 	}
-	
+		
 	@Path("getHeatMapData")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
