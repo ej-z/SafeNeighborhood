@@ -26,18 +26,25 @@
       <form class="btn-group" id="example-reset-form">
       <div class="btn-group">
       <select name="drop_down" id="dropDownStates" multiple="multiple">
-            <option value="None" selected="Selected">Select State</option>
       </select>
       </div>
       </form>
+
+      <form class="btn-group" id="example-zip-code">
+        <div class="btn-group">
+        <select name="drop_down" id="dropDownZipCodes" multiple="multiple">
+        </select>
+        </div>
+      </form>
      
-      
-        <select name="drop_down" id="dropDownTypes">
-            <option value="None" selected="Selected">Select Type</option>
+      <form class="btn-group" id="example-Types">
+        <div class="btn-group">
+        <select name="drop_down" id="dropDownTypes" multiple="multiple">
+
         </select>
-        <select name="drop_down" id="dropDownCategories" multiple="true">
-            <option value="None" selected="Selected">Select Categories</option>
-        </select>
+        </div>
+        </form>
+        
         <button id="submitBtn" type="button">Submit</button>
       </div>    
     
@@ -65,7 +72,7 @@
         getStates();
         getTypes();
         $("#submitBtn").bind("click", function(){submit()});
-        
+        $("#dropDownZipCodes").hide();
       });
       
       var POINTS = []
@@ -86,6 +93,26 @@
         data = {type: type}
         getData("getCategories",data, populateCategories);  
       }
+      
+      function getZipCodes(state){
+        data = {state: state}
+        getData("getZipcodes",data, populateZipCodes);
+      }
+
+      function populateZipCodes(zipCodes)
+      {
+        $.each(zipCodes.sort(), function (key, value) {
+                  $("#dropDownZipCodes").append($('<option></option>').val(value).html(value));
+              });
+        $('#dropDownZipCodes').multiselect();
+        $('#example-zip-code').on('reset', function() {
+            $('#dropDownZipCodes option:selected').each(function() {
+                $(this).prop('selected', false);
+            })
+ 
+            $('#dropDownZipCodes').multiselect('refresh');
+          })
+      }
 
       function populateStates(states)
       {
@@ -99,18 +126,37 @@
             })
  
             $('#dropDownStates').multiselect('refresh');
+
+            
         });
+
+        $('#dropDownStates').change(function () {
+                  var state = $(this).val();
+                  if(state.length == 1)
+                  {
+                    $("#dropDownZipCodes").show();
+                    getZipCodes(state[0]);
+                  }
+                  else
+                  {
+                    $("#dropDownZipCodes").hide();
+                  }
+              });
       }
       function populateTypes(types)
       {
-        $.each(types, function (key, value) {
-                  $("#dropDownTypes").append($('<option></option>').val(value).html(value));
+        $.each(types, function (key,value) {
+                  $("#dropDownTypes").append($('<optgroup id="type_'+value.Type+'"> </optgroup>'));
+                  $("#type_"+value.Type).attr("label",value.Type)
+                  $.each(value.Categories,function(key1,value1)
+                  {
+                    $("#type_"+value.Type).append($('<option></option>').val(value1).html(value1));
+                  }
+                );
               });
+              $('#dropDownTypes').multiselect({
+              enableClickableOptGroups: true});
 
-        $('#dropDownTypes').change(function () {
-                  var type = $(this).val();
-                  getCategories(type);
-              });
       }
 
       function populateCategories(categories)
