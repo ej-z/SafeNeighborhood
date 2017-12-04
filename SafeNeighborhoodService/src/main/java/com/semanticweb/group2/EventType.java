@@ -9,6 +9,7 @@ public class EventType {
 	{"Arson_Fire","Basic","Wildlands"},
 	{"Earthquake","Hurricane","Tsunami","Volcano"},
 	{"DIPHTHERIA","HEPATITIS_A","MEASELS","MUMPS","PERTUSSIS","POLIO","RUBELLA","SMALLPOX"}};
+	private int[] zipcodeSupport = {1,1,0,0};
 	private List<TypeData> typeData;
 	private HashMap<String, String> categoryTypes;
 	
@@ -18,7 +19,7 @@ public class EventType {
 		typeData = new ArrayList<TypeData>();
 		for(int i = 0; i < types.length; i++)
 		{
-			typeData.add(new TypeData(types[i], categories[i]));
+			typeData.add(new TypeData(types[i], zipcodeSupport[i], categories[i]));
 			for(int j = 0; j < categories[i].length; j++)
 			{
 				categoryTypes.put(categories[i][j], types[i]);

@@ -34,7 +34,7 @@ public class DataFetcher {
 		return fetchHeatMapResults(getEndpoint(), Locations, Categories, isState);
 	}
 	
-	public List<ChartData> fetchChartData(String locations, String categories, int isState)
+	public ChartDataList fetchChartData(String locations, String categories, int isState)
 	{
 		String[] Locations = locations.split(",");
 		String[] Categories = categories.split(",");
@@ -92,14 +92,14 @@ public class DataFetcher {
 		stateQuery += "WHERE {    ?r rdf:type ?type.    ";
 		stateQuery += "?r sn:occured_at ?loc.";
 		stateQuery += "OPTIONAL  { ?r sn:incidents_per_1000000 ?i . FILTER (?i > 0) }";
-		stateQuery += BuildFilter("?state", locations);
+		stateQuery += BuildFilter("?loc", locations);
 		stateQuery += BuildFilter("?type", categories) + "}"; 
 		stateQuery += "GROUP BY ?loc }}";
 		
 		String zipcodeQuery = "SELECT (?loc as ?location) (count(?loc) as ?count)";
 		zipcodeQuery += "WHERE {    ?r rdf:type ?type.    ";
 		zipcodeQuery += "?r sn:occured_at ?loc.";
-		zipcodeQuery += BuildFilter("?state", locations);
+		zipcodeQuery += BuildFilter("?loc", locations);
 		zipcodeQuery += BuildFilter("?type", categories) + "}"; 
 		zipcodeQuery += "GROUP BY ?loc";
 		
@@ -107,7 +107,7 @@ public class DataFetcher {
 	}
 		
 	
-	private List<ChartData> fetchChartResults(String endpoint, String[] locations, String[] categories, int isState)
+	private ChartDataList fetchChartResults(String endpoint, String[] locations, String[] categories, int isState)
 	{
 		String stateQuery = "SELECT * WHERE {{";
 		stateQuery +=" SELECT (?state as ?location) ?type (count(?type) as ?count)";
@@ -122,16 +122,19 @@ public class DataFetcher {
 		stateQuery += "WHERE {    ?r rdf:type ?type.    ";
 		stateQuery += "?r sn:occured_at ?loc.";
 		stateQuery += "OPTIONAL  { ?r sn:incidents_per_1000000 ?i . FILTER (?i > 0) }";
-		stateQuery += BuildFilter("?state", locations);
+		stateQuery += BuildFilter("?loc", locations);
 		stateQuery += BuildFilter("?type", categories) + "}"; 
 		stateQuery += "GROUP BY ?loc ?type }}";
+		stateQuery += "ORDER BY ?location";
 		
 		String zipcodeQuery = "SELECT (?loc as ?location) ?type (count(?type) as ?count)";
 		zipcodeQuery += "WHERE {    ?r rdf:type ?type.    ";
 		zipcodeQuery += "?r sn:occured_at ?loc.";
-		zipcodeQuery += BuildFilter("?state", locations);
+		zipcodeQuery += BuildFilter("?loc", locations);
 		zipcodeQuery += BuildFilter("?type", categories) + "}"; 
 		zipcodeQuery += "GROUP BY ?loc ?type";
+		zipcodeQuery += "ORDER BY ?location";
+		
 		
 		return isState == 1? runChartQuery(endpoint, stateQuery) : runChartQuery(endpoint, zipcodeQuery);
 		
@@ -161,20 +164,35 @@ public class DataFetcher {
 				  RDFNode count = soln.get("?count");
 				  if(location != null && count != null)
 				  {					  
-					  String zipcode = location.toString().substring(snNamespace.length());
-					  LatLong l = Location.getInstance().getLatLong(zipcode);
+					  String loc = location.toString().substring(snNamespace.length());
+					  if(loc.length() == 5) {
+					  LatLong l = Location.getInstance().getLatLong(loc);
 					  Literal c = count.asLiteral();
 					  if(l != null)
-						  queryResult.add(new HeatMapData(zipcode, l.Latitude, l.Longitude, c.getString()));
+						  queryResult.add(new HeatMapData(loc, l.Latitude, l.Longitude, c.getString()));
+					  }
+					  else
+					  {
+						  String[] zipcodes = Location.getInstance().getZipCodes(loc);
+						  if(zipcodes != null) {
+							  for(String z : zipcodes) {
+								  LatLong l = Location.getInstance().getLatLong(z);
+								  Literal c = count.asLiteral();
+								  if(l != null)
+									  queryResult.add(new HeatMapData(loc, l.Latitude, l.Longitude, c.getString()));
+								  }
+							  }
+						  }
+					  }
 				  }			
-			  } 
+			   
 		  }
 		  finally { qexec.close();}		
 		  
 		  return queryResult;
 	}
 	
-	private List<ChartData> runChartQuery(String endpoint, String queryRequest)
+	private ChartDataList runChartQuery(String endpoint, String queryRequest)
 	{
 		  StringBuffer queryStr = new StringBuffer();			
 		  	 
@@ -186,11 +204,8 @@ public class DataFetcher {
 		  System.out.println(queryStr.toString());
 		  QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, queryStr.toString());
 		  
-		  List<ChartData> queryResult = new ArrayList<ChartData>();
-				
-		  String oldl = null, oldt = null;
-		  ChartData chr = null;
-		  LocationData loc = null;
+		  ChartDataList queryResult = new ChartDataList();				
+		  
 		  try 
 		  {
 			  ResultSet response = qexec.execSelect();
@@ -207,27 +222,7 @@ public class DataFetcher {
 					  String c = type.toString().substring(snNamespace.length());
 					  String t = EventType.getInstance().GetType(c);
 					  Literal cnt = count.asLiteral();
-					  if(t.equals(oldt))
-					  {
-						  if(l.equals(oldl)) {
-							  loc.Points.add(new PointData(c, cnt.getString()));
-						  }
-						  else {
-							  LocationData ld = new LocationData(l);
-							  ld.Points.add(new PointData(c, cnt.getString()));
-							  loc = ld;
-							  chr.Data.add(ld);
-						  }
-					  }
-					  else {
-						  chr = new ChartData(t);
-						  LocationData ld = new LocationData(l);
-						  ld.Points.add(new PointData(c, cnt.getString()));
-						  loc = ld;
-						  chr.Data.add(ld);
-						  queryResult.add(chr);
-					  }
-						  
+					  queryResult.AddData(t, l, c, cnt.getString());						  
 				  }			
 			  } 
 		  }

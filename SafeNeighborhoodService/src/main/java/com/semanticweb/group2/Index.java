@@ -2,79 +2,23 @@ package com.semanticweb.group2;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Path("")
-public class Index {
-	
-
-	@Path("css/{css}")
-	@GET
-	
-	public InputStream getCSS(@PathParam("css") String fileName){
-	File index = new File(getClass().getClassLoader().getResource("css/" + fileName).getFile());;
-	try {
-	    return new FileInputStream(index);
-	} catch (FileNotFoundException e) {
-	    String s = "ERROR";
-	    return new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-	} 
-	}
-	
-	@Path("img/{image}")
-	@GET
-	
-	public InputStream getImg(@PathParam("image") String fileName){
-	File index = new File(getClass().getClassLoader().getResource("img/" + fileName).getFile());;
-	try {
-	    return new FileInputStream(index);
-	} catch (FileNotFoundException e) {
-	    String s = "ERROR";
-	    return new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-	} 
-	}
-	
-	@Path("js/{js}")
-	@GET
-	
-	public InputStream getJS(@PathParam("js") String fileName){
-	File index = new File(getClass().getClassLoader().getResource("js/" + fileName).getFile());
-	try {
-	    return new FileInputStream(index);
-	} catch (FileNotFoundException e) {
-	    String s = "ERROR";
-	    return new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-	} 
-	}
-	
-
-	@Path("vendor/font-awesome/css/{v}")
-	@GET
-	
-	public InputStream getVendorFA(@PathParam("v") String fileName){
-	File index = new File(getClass().getClassLoader().getResource("vendor/font-awesome/css/" + fileName).getFile());
-	try {
-	    return new FileInputStream(index);
-	} catch (FileNotFoundException e) {
-	    String s = "ERROR";
-	    return new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-	} 
-	}
+public class Index {	
 	
 	@Path("/")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public InputStream index() throws FileNotFoundException {		
 		
-		File f = new File(getClass().getClassLoader().getResource("MapTest.html").getFile());
+		File f = new File(getClass().getClassLoader().getResource("app.html").getFile());
 		
 		return new FileInputStream(f);
 	}
@@ -100,7 +44,7 @@ public class Index {
 	@Path("getTypes")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTypes() {			
+	public Response getTypes(@QueryParam("isState") int isState) {			
 		
 		List<TypeData> typeData = EventType.getInstance().GetTypeData();		
 		return Response.ok(typeData).build();
@@ -128,7 +72,7 @@ public class Index {
 		
 		List<ChartData> data = null;
 		try {
-			data = DataFetcher.getInstance().fetchChartData(locations, categories, isState);
+			data = DataFetcher.getInstance().fetchChartData(locations, categories, isState).chartData;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
