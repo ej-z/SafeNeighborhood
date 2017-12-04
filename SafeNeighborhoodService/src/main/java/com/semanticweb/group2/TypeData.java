@@ -7,7 +7,7 @@ public class TypeData {
 	
 	public TypeData(String type, String[] categories) {
 		Type = type;
-		Categories = categories;
+		Categories = categories.clone();
 	}
 	
 }

@@ -44,19 +44,9 @@ public class Index {
 	@Path("getTypes")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTypes() {		
+	public Response getTypes() {			
 		
-		String[] CrimeCategories = {"Arson_Crime","DrugOffense","Murder","Rape","Theft"};
-		String[] FireCategories = {"Arson_Fire","Basic","Wildlands"};
-		String[] DisasterCategories = {"Earthquake","Hurricane","Tsunami","Volcano"};
-		String[] DiseaseCategories = {"DIPHTHERIA","HEPATITIS_A","MEASELS","MUMPS","PERTUSSIS","POLIO","RUBELLA","SMALLPOX"};
-		List<TypeData> typeData = new ArrayList<TypeData>();
-		
-		typeData.add(new TypeData("Crime", CrimeCategories));
-		typeData.add(new TypeData("Fire", FireCategories));
-		typeData.add(new TypeData("Disaster", DisasterCategories));
-		typeData.add(new TypeData("Disease", DiseaseCategories));
-		
+		List<TypeData> typeData = EventType.getInstance().GetTypeData();		
 		return Response.ok(typeData).build();
 	}
 		
@@ -81,12 +71,12 @@ public class Index {
 	public Response getChartData(@QueryParam("locations") String locations,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
 		
 		List<ChartData> data = null;
-		/*try {
+		try {
 			data = DataFetcher.getInstance().fetchChartData(locations, categories, isState);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
-		data = new ArrayList<ChartData>();
+		}
+		/*data = new ArrayList<ChartData>();
 		ChartData c1 = new ChartData("Crime");
 		LocationData l1 = new LocationData("AK");
 		l1.Points.add(new PointData("Murder", "89"));
@@ -108,7 +98,7 @@ public class Index {
 		c2.Data.add(l3);
 		c2.Data.add(l4);
 		data.add(c1);
-		data.add(c2);
+		data.add(c2);*/
 		return Response.ok(data).build();
 	}
 }

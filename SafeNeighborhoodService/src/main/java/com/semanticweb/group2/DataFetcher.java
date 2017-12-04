@@ -79,27 +79,62 @@ public class DataFetcher {
 	
 	private List<HeatMapData> fetchHeatMapResults(String endpoint, String[] locations, String[] categories, int isState)
 	{
-		String q = isState == 1 ? "    ?loc rdfs:subClassOf ?state."+BuildFilter("?state", locations) : BuildFilter("?loc", locations); 
-		return runHeatMapQuery(endpoint, "SELECT ?loc (count(?loc) as ?count)" + 
-				"WHERE {" + 
-				"    ?r rdf:type ?type." +
-				"    ?r sn:occured_at ?loc." + 
-				q +
-				BuildFilter("?type", categories) +
-				"} GROUP BY ?loc");  //add the query string
+		String stateQuery = "SELECT * WHERE {{";
+		stateQuery +=" SELECT (?loc as ?location) (count(?loc) as ?count)";
+		stateQuery +=" WHERE {    ?r rdf:type ?type.   " ;
+		stateQuery +=" ?r sn:occured_at ?loc.  "   ;
+		stateQuery +=" ?loc rdfs:subClassOf ?state. ";
+		stateQuery += BuildFilter("?state", locations);
+		stateQuery += BuildFilter("?type", categories) + "}";
+		stateQuery += " GROUP BY ?loc ";
+		stateQuery += "} UNION {";
+		stateQuery += "SELECT (?loc as ?location) (count(?loc) as ?count)";
+		stateQuery += "WHERE {    ?r rdf:type ?type.    ";
+		stateQuery += "?r sn:occured_at ?loc.";
+		stateQuery += "OPTIONAL  { ?r sn:incidents_per_1000000 ?i . FILTER (?i > 0) }";
+		stateQuery += BuildFilter("?state", locations);
+		stateQuery += BuildFilter("?type", categories) + "}"; 
+		stateQuery += "GROUP BY ?loc }}";
+		
+		String zipcodeQuery = "SELECT (?loc as ?location) (count(?loc) as ?count)";
+		zipcodeQuery += "WHERE {    ?r rdf:type ?type.    ";
+		zipcodeQuery += "?r sn:occured_at ?loc.";
+		zipcodeQuery += BuildFilter("?state", locations);
+		zipcodeQuery += BuildFilter("?type", categories) + "}"; 
+		zipcodeQuery += "GROUP BY ?loc";
+		
+		return isState == 1? runHeatMapQuery(endpoint, stateQuery) : runHeatMapQuery(endpoint, zipcodeQuery);
 	}
+		
 	
 	private List<ChartData> fetchChartResults(String endpoint, String[] locations, String[] categories, int isState)
 	{
-		String select = isState == 1 ? "SELECT ?state as ?location ?mastertype ?type (count(?state) as ?count)" : "SELECT ?loc as ?location  ?mastertype ?type (count(?loc) as ?count)";
-		String filter = isState == 1 ? "    ?loc rdfs:subClassOf ?state."+BuildFilter("?state", locations) : BuildFilter("?loc", locations); 
-		String groupby = isState == 1 ? "} GROUP BY ?state ?mastertype ?type" : "} GROUP BY ?loc ?mastertype ?type";
-		return runChartQuery(endpoint, select + 
-				"WHERE {" + 
-				"    ?r rdf:type ?type." +
-				"    ?r sn:occured_at ?loc." + 
-				"    ?type rdfs:subClassOf ?mastertype." + 
-				filter + groupby);  //add the query string
+		String stateQuery = "SELECT * WHERE {{";
+		stateQuery +=" SELECT (?state as ?location) ?type (count(?type) as ?count)";
+		stateQuery +=" WHERE {    ?r rdf:type ?type.   " ;
+		stateQuery +=" ?r sn:occured_at ?loc.  "   ;
+		stateQuery +=" ?loc rdfs:subClassOf ?state. ";
+		stateQuery += BuildFilter("?state", locations);
+		stateQuery += BuildFilter("?type", categories) + "}";
+		stateQuery += " GROUP BY ?state  ?type";
+		stateQuery += "} UNION {";
+		stateQuery += "SELECT (?loc as ?location) ?type (count(?type) as ?count)";
+		stateQuery += "WHERE {    ?r rdf:type ?type.    ";
+		stateQuery += "?r sn:occured_at ?loc.";
+		stateQuery += "OPTIONAL  { ?r sn:incidents_per_1000000 ?i . FILTER (?i > 0) }";
+		stateQuery += BuildFilter("?state", locations);
+		stateQuery += BuildFilter("?type", categories) + "}"; 
+		stateQuery += "GROUP BY ?loc ?type }}";
+		
+		String zipcodeQuery = "SELECT (?loc as ?location) ?type (count(?type) as ?count)";
+		zipcodeQuery += "WHERE {    ?r rdf:type ?type.    ";
+		zipcodeQuery += "?r sn:occured_at ?loc.";
+		zipcodeQuery += BuildFilter("?state", locations);
+		zipcodeQuery += BuildFilter("?type", categories) + "}"; 
+		zipcodeQuery += "GROUP BY ?loc ?type";
+		
+		return isState == 1? runChartQuery(endpoint, stateQuery) : runChartQuery(endpoint, zipcodeQuery);
+		
 	}
 	
 	private List<HeatMapData> runHeatMapQuery(String endpoint, String queryRequest)
@@ -122,7 +157,7 @@ public class DataFetcher {
 			  while( response.hasNext())
 			  {
 				  QuerySolution soln = response.nextSolution();
-				  RDFNode location = soln.get("?loc");
+				  RDFNode location = soln.get("?location");
 				  RDFNode count = soln.get("?count");
 				  if(location != null && count != null)
 				  {					  
@@ -163,15 +198,14 @@ public class DataFetcher {
 			  while( response.hasNext())
 			  {
 				  QuerySolution soln = response.nextSolution();
-				  RDFNode location = soln.get("?loc");
-				  RDFNode mastertype = soln.get("?mastertype");
+				  RDFNode location = soln.get("?location");
 				  RDFNode type = soln.get("?type");
 				  RDFNode count = soln.get("?count");
 				  if(location != null && count != null)
 				  {					  
 					  String l = location.toString().substring(snNamespace.length());
-					  String t = mastertype.toString().substring(snNamespace.length());
 					  String c = type.toString().substring(snNamespace.length());
+					  String t = EventType.getInstance().GetType(c);
 					  Literal cnt = count.asLiteral();
 					  if(t.equals(oldt))
 					  {
