@@ -78,15 +78,37 @@ public class Index {
 	@Path("getChartData")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getChartData(@QueryParam("states") String locations,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
+	public Response getChartData(@QueryParam("locations") String locations,@QueryParam("categories") String categories,@QueryParam("isState") int isState) throws IOException {
 		
 		List<ChartData> data = null;
-		try {
+		/*try {
 			data = DataFetcher.getInstance().fetchChartData(locations, categories, isState);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		
+		}*/
+		data = new ArrayList<ChartData>();
+		ChartData c1 = new ChartData("Crime");
+		LocationData l1 = new LocationData("AK");
+		l1.Points.add(new PointData("Murder", "89"));
+		l1.Points.add(new PointData("Robbery", "189"));
+		l1.Points.add(new PointData("Rape", "56"));
+		LocationData l2 = new LocationData("AZ");
+		l2.Points.add(new PointData("Murder", "34"));
+		l2.Points.add(new PointData("Robbery", "462"));
+		l2.Points.add(new PointData("Rape", "34"));
+		c1.Data.add(l1);
+		c1.Data.add(l2);
+		ChartData c2 = new ChartData("Fire");
+		LocationData l3 = new LocationData("AK");
+		l3.Points.add(new PointData("Arson", "55"));
+		l3.Points.add(new PointData("Basic", "34"));
+		LocationData l4 = new LocationData("AZ");
+		l4.Points.add(new PointData("Arson", "78"));
+		l4.Points.add(new PointData("Basic", "57"));
+		c2.Data.add(l3);
+		c2.Data.add(l4);
+		data.add(c1);
+		data.add(c2);
 		return Response.ok(data).build();
 	}
 }

@@ -11,11 +11,7 @@ import org.apache.jena.query.ResultSet;
 public class DataFetcher {
 
 	String snNamespace = Config.getInstance().getProperty("sn.namespace");
-	String fusekiServer = Config.getInstance().getProperty("fuseki.uri");
-	String fireDataset = Config.getInstance().getProperty("fire.dataset");
-	String crimeDataset = Config.getInstance().getProperty("crime.dataset");
-	String diseaseDataset = Config.getInstance().getProperty("disease.dataset");
-	String disasterDataset = Config.getInstance().getProperty("disaster.dataset");
+	String fusekiServer = Config.getInstance().getProperty("fuseki.uri");	
 	
 	private DataFetcher(){
 	}
@@ -33,8 +29,7 @@ public class DataFetcher {
 	public List<HeatMapData> fetchHeatMapData(String locations, String categories, int isState)
 	{
 		String[] Locations = locations.split(",");
-		String[] Categories = categories.split(",");
-		List<HeatMapData> result = new ArrayList<HeatMapData>();		
+		String[] Categories = categories.split(",");		
 		
 		return fetchHeatMapResults(getEndpoint(), Locations, Categories, isState);
 	}
@@ -43,14 +38,13 @@ public class DataFetcher {
 	{
 		String[] Locations = locations.split(",");
 		String[] Categories = categories.split(",");
-		List<ChartData> result = new ArrayList<ChartData>();
 		
 		return fetchChartResults(getEndpoint(), Locations, Categories, isState);
 	}
 	
 	private String getEndpoint()
 	{
-		return fusekiServer+"/SafeNeighborhoodDataset/query";
+		return fusekiServer+"/ds/query";
 		
 		/*if(type.equals("Crime"))
 			return fusekiServer+"/"+crimeDataset+"/query";
@@ -97,14 +91,15 @@ public class DataFetcher {
 	
 	private List<ChartData> fetchChartResults(String endpoint, String[] locations, String[] categories, int isState)
 	{
-		String q = isState == 1 ? "    ?loc rdfs:subClassOf ?state."+BuildFilter("?state", locations) : BuildFilter("?loc", locations); 
-		return runChartQuery(endpoint, "SELECT ?loc, ?mastertype, ?type, (count(?loc) as ?count)" + 
+		String select = isState == 1 ? "SELECT ?state as ?location ?mastertype ?type (count(?state) as ?count)" : "SELECT ?loc as ?location  ?mastertype ?type (count(?loc) as ?count)";
+		String filter = isState == 1 ? "    ?loc rdfs:subClassOf ?state."+BuildFilter("?state", locations) : BuildFilter("?loc", locations); 
+		String groupby = isState == 1 ? "} GROUP BY ?state ?mastertype ?type" : "} GROUP BY ?loc ?mastertype ?type";
+		return runChartQuery(endpoint, select + 
 				"WHERE {" + 
 				"    ?r rdf:type ?type." +
 				"    ?r sn:occured_at ?loc." + 
 				"    ?type rdfs:subClassOf ?mastertype." + 
-				q +
-				"} GROUP BY ?loc ?mastertype ?type");  //add the query string
+				filter + groupby);  //add the query string
 	}
 	
 	private List<HeatMapData> runHeatMapQuery(String endpoint, String queryRequest)
@@ -114,7 +109,6 @@ public class DataFetcher {
 		  queryStr.append("PREFIX sn" + ": <" + snNamespace + "> ");
 		  queryStr.append("PREFIX rdfs" + ": <" +  "http://www.w3.org/2000/01/rdf-schema#" + "> ");
 		  queryStr.append("PREFIX rdf" + ": <" + "http://www.w3.org/1999/02/22-rdf-syntax-ns#" + "> ");
-		  queryStr.append("PREFIX foaf" + ": <" + "http://xmlns.com/foaf/0.1/" + "> ");
 				
 		  queryStr.append(queryRequest);
 		  QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, queryStr.toString());
@@ -152,9 +146,9 @@ public class DataFetcher {
 		  queryStr.append("PREFIX sn" + ": <" + snNamespace + "> ");
 		  queryStr.append("PREFIX rdfs" + ": <" +  "http://www.w3.org/2000/01/rdf-schema#" + "> ");
 		  queryStr.append("PREFIX rdf" + ": <" + "http://www.w3.org/1999/02/22-rdf-syntax-ns#" + "> ");
-		  queryStr.append("PREFIX foaf" + ": <" + "http://xmlns.com/foaf/0.1/" + "> ");
 				
 		  queryStr.append(queryRequest);
+		  System.out.println(queryStr.toString());
 		  QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, queryStr.toString());
 		  
 		  List<ChartData> queryResult = new ArrayList<ChartData>();

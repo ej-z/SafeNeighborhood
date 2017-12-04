@@ -1,6 +1,6 @@
 package com.semanticweb.group2;
 
-import java.util.List;
+import java.util.*;
 
 public class LocationData {
 
@@ -9,5 +9,6 @@ public class LocationData {
 	
 	public LocationData(String location) {
 		Location = location;
+		Points = new ArrayList<PointData>();
 	}
 }

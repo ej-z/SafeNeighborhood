@@ -1,6 +1,6 @@
 package com.semanticweb.group2;
 
-import java.util.List;
+import java.util.*;
 
 public class ChartData {
 	
@@ -9,6 +9,7 @@ public class ChartData {
 	
 	public ChartData(String type) {
 		Type = type;
+		Data = new ArrayList<LocationData>();
 	}
 
 }
