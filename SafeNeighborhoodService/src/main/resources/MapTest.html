@@ -1,172 +1,383 @@
 <!DOCTYPE html>
-<html>
-  <head>
-  	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Safe Neighborhood</title>
-    <style>
-       #map {
-        height: 400px;
-        width: 100%;
-       }
-    </style>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  </head>
-  <body>    
-    <form>
-	  <div>
-	    <select name="drop_down" id="dropDownStates">
-            <option value="None" selected="Selected">Select State</option>
-        </select>
-        <select name="drop_down" id="dropDownTypes">
-            <option value="None" selected="Selected">Select Type</option>
-        </select>
-        <select name="drop_down" id="dropDownCategories" multiple="true">
-            <option value="None" selected="Selected">Select Categories</option>
-        </select>
-        <button id="submitBtn" type="button">Submit</button>
-   	  </div>	  
-	  
-	</form>
+<html lang="en">
 
-    <style>
-      /* Always set the map height explicitly to define the size of the div
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Safe Neighborhood</title>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+
+    ul  {
+      min-width: 300px;
+      overflow-y: scroll;
+      
+    }
+
+    header {
+      height: 400px;
+      background-image: url("img/header.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      padding: 20px 10px;
+    }
+  </style>
+  <script type="text/javascript" src=" https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+
+    <link href="css/jquery.multiselect.css" rel="stylesheet" type="text/css">
+
+  <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+    rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic'
+    rel='stylesheet' type='text/css'>
+
+  <!-- Custom styles for this template -->
+  <link href="css/creative.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+
+  <nav class="navbar navbar-default">
+    <div class="navbar-header">
+      <a class="navbar-brand">Safe Neighborhood</a>
+    </div>
+
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav" style="float:right">
+        <li>
+          <a href="#about">About</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <header class="text-center text-white d-flex">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <h1 class="text-uppercase">
+          <strong>Get to know about a place!</strong>
+        </h1>
+        <hr>
+      </div>
+      <div class="col-lg-10 mx-auto">
+        <p class="text-faded mb-5">Find out everything you need to know about your neighborhood</p>
+        <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Find Out More</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="bg-primary" id="about">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+          <h2 class="section-heading text-white">Safety of a place</h2>
+          <hr class="light my-4">
+          <p class="text-faded mb-4">Pick states or zipcodes within states to compare among them. Get the crime incidents, fire occurrences, diseases
+            and disasters. A heat map to visualize the safety and charts that will show the exact statistics. Know the place
+            before you decide to move!</p>
+          <a class="btn btn-light btn-xl js-scroll-trigger" href="#services">Get Started!</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="row">
+    <div class="center" style="float: none; margin: 0 auto; padding: 20px 10px;">
+      <div class="col-sm-2">
+        <p class="text-right lead">Choose state: </p>
+      </div>
+      <div class="col-sm-2" >
+        <form class="btn-group" id="example-reset-form">
+          <div class="btn-group"  id="ddl_states_parent">
+            <select  id="dropDownStates"  name="multicheckbox[]" multiple="multiple"  >
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-2">
+        <form class="btn-group" id="example-zip-code">
+          <div class="btn-group">
+            <select name="drop_down" id="dropDownZipCodes" multiple="multiple">
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-2">
+        <p class="text-right lead">Choose category: </p>
+      </div>
+      <div class="col-sm-2">
+        <form class="btn-group" id="example-Types">
+          <div class="btn-group">
+            <select name="drop_down" id="dropDownTypes" multiple="multiple">
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-sm-2 text-center">
+        <button id="submitBtn" type="button" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <style>
+    /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
 
-    <div id="map"></div>
+    #map {
+      height: 50%;
+    }
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
+    #chartContainer {
+      height: 50%
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <div id="map"></div>
+  <div id="chartContainer"></div>
+  <script src="js/jquery.multiselect.js"></script>
+  <script>
+  $("#dropDownStates").multiselect({
+      columns: 1,
+      placeholder: 'Select State(s)',
+      maxPlaceholderOpts:2
+  });
+  
+  $("#dropDownZipCodes").multiselect({
+      columns: 1,
+      placeholder: 'Select Zip Code(s)',
+      maxPlaceholderOpts:2
+  });
+  
+  $("#dropDownTypes").multiselect({
+      columns: 1,
+      placeholder: 'Select Categories',
+      showOptGroups:true,
+      selectGroup:true,
+      maxPlaceholderOpts:2
+  });
+  </script>
+  <script>      
     
-    <script>      
+
+    $(document).ready(function () {
+      getStates();
+      getTypes();
+      $("#submitBtn").bind("click", function () { submit() });
+      $("#dropDownZipCodes").hide();
       
-      $(document).ready(function(){
-      	getStates();
-      	getTypes();
-      	$("#submitBtn").bind("click", function(){submit()});
+    });
+
+    var POINTS = []
+
+
+    function getStates() {
+      getData("getStates", null, populateStates);
+    }
+
+    function getTypes() {
+      getData("getTypes", null, populateTypes);
+    }
+
+    function getZipCodes(state) {
+      data = { state: state }
+      getData("getZipcodes", data, populateZipCodes);
+    }
+
+    function populateZipCodes(zipCodes) {
+      $.each(zipCodes.sort(), function (key, value) {
+        $("#dropDownZipCodes").append($('<option></option>').val(value).html(value));
       });
-      
-      var POINTS = []
+      $('#dropDownZipCodes').multiselect('reload');
+      $('#example-zip-code').on('reset', function () {
+        $('#dropDownZipCodes option:selected').each(function () {
+          $(this).prop('selected', false);
+        })
 
+        $('#dropDownZipCodes').multiselect('reload');
+      })
+    }
 
-      function getStates()
-      {
-      	getData("getStates",null, populateStates);	
+    function populateStates(states) {
+      $.each(states.sort(), function (key, value) {
+        $("#dropDownStates").append($('<option></option>').val(value).html(value));
+      });
+      $("#dropDownStates").multiselect('reload');
+      //$('#dropDownStates').multiselect();
+      $('#example-reset-form').on('reset', function () {
+        $('#dropDownStates option:selected').each(function () {
+          $(this).prop('selected', false);
+        })
+
+         $("#dropDownStates").multiselect('reload');
+      });
+
+      $('#dropDownStates').change(function () {
+        var state = $(this).val();
+        if (state.length == 1) {
+          $("#example-zip-code").show();
+          getZipCodes(state[0]);
+        }
+        else {
+          $("#example-zip-code").hide();
+        }
+      });
+    }
+    function populateTypes(types) {
+      $.each(types, function (key, value) {
+        $("#dropDownTypes").append($('<optgroup id="type_' + value.Type + '"> </optgroup>'));
+        $("#type_" + value.Type).attr("label", value.Type)
+        $.each(value.Categories, function (key1, value1) {
+          $("#type_" + value.Type).append($('<option></option>').val(value1).html(value1));
+        }
+        );
+      });
+      $('#dropDownTypes').multiselect('reload');
+    }
+
+    function submit() {
+      var locations;
+      var states = $("#dropDownStates").val();
+      var locationsStr = "";
+      var isState;
+      if (states.length == 1) {
+        locations = $("#dropDownZipCodes").val();
+        for (var i = 0; i < locations.length; i++) {
+          locationsStr += locations[i] + ",";
+        }
+        locationsStr = locationsStr.substring(0, locationsStr.length - 1);
+        isState = 0;
       }
-
-      function getTypes()
-      {
-      	getData("getTypes",null, populateTypes);	
+      else {
+        locations = states;
+        for (var i = 0; i < locations.length; i++) {
+          locationsStr += locations[i] + ",";
+        }
+        locationsStr = locationsStr.substring(0, locationsStr.length - 1);
+        isState = 1;
       }
-
-      function getCategories(type)
-      {
-      	data = {type: type}
-      	getData("getCategories",data, populateCategories);	
+      var categories = $("#dropDownTypes").val();
+      var categoriesStr = "";
+      for (var i = 0; i < categories.length; i++) {
+        categoriesStr += categories[i] + ",";
       }
+      categoriesStr = categoriesStr.substring(0, categoriesStr.length - 1);
 
-      function populateStates(states)
-      {
-      	$.each(states.sort(), function (key, value) {
-                  $("#dropDownStates").append($('<option></option>').val(value).html(value));
-              });
+      if (locationsStr != 'None' && categoriesStr != 'None' && isState != 'None') {
+        var data = { locations: locationsStr, categories: categoriesStr, isState: isState };
+        getData("getHeatMapData", data, drawMap);
+        getData("getChartData", data, displayCharts)
       }
-      function populateTypes(types)
-      {
-      	$.each(types, function (key, value) {
-                  $("#dropDownTypes").append($('<option></option>').val(value).html(value));
-              });
+    }
 
-      	$('#dropDownTypes').change(function () {
-                  var type = $(this).val();
-                  getCategories(type);
-              });
+    function drawMap(data) {
+
+      var points = []
+
+      $.each(data, function (key, value) {
+
+        var c = Number(value.count);
+
+        while (c-- > 0) {
+          points.push(new google.maps.LatLng(Number(value.latitude), Number(value.longitude)))
+        }
+      });
+
+      POINTS = points;
+
+      initMap();
+    }
+
+    function initMap() {
+      var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: { lat: 37.090, lng: -95.712 },
+        mapTypeId: 'terrain'
+      });
+
+      heatmap = new google.maps.visualization.HeatmapLayer({
+        data: POINTS,
+        map: map
+      });
+    }
+
+
+    function getData(action, data, callback) {
+      $.ajax({
+        url: "http://localhost:8080/SafeNeighborhoodService/" + action,
+        type: "get",
+        data: data,
+        complete: function (xhr, status) {
+          if (status === 'error' || !xhr.responseText) {
+            console.log('error');
+          }
+          else {
+            callback(xhr.responseJSON);
+          }
+        }
+      });
+    }
+
+    function displayCharts(main) {
+
+      for (var i = 0; i < main.length; i++) {
+        var Data = []
+        for (var j = 0; j < main[i].Data.length; j++) {
+
+          Data.push({
+            type: "stackedColumn100",
+            legendText: main[i].Data[j].Location,
+            showInLegend: "true",
+            dataPoints: main[i].Data[j].Points
+          })
+        }
+
+        $('#chartContainer').append('<div id="chartContainer' + i + '" style="height: 300px; width: 500px;"></div><br> <br>')
+
+        var chart = new CanvasJS.Chart("chartContainer" + i,
+          {
+            title: {
+              text: main[i].Type
+            },
+            axisY: {
+              title: "count",
+              interval: 20
+            },
+            data: Data
+          });
+
+        chart.render();
       }
-
-      function populateCategories(categories)
-      {
-      	$("#dropDownCategories").html('<option value="None" selected="Selected">Select Categories</option>');
-      	$.each(categories, function (key, value) {
-                  $("#dropDownCategories").append($('<option></option>').val(value).html(value));
-              });	
-      }
-
-      function submit()
-      {
-      	var states = $("#dropDownStates").val();
-      	var type = $("#dropDownTypes").val();
-      	var categories = $("#dropDownCategories").val().join();
-
-      	if(states != 'None' && type != 'None' && categories != 'None')
-      	{
-      		data = {states: states, type: type, categories: categories}
-      		getData("getData",data, drawMap);	
-      	}
-      }
-
-      function drawMap(data) {
-
-      	var points = []
-
-      	$.each(data, function (key, value) {
-
-      		var c = Number(value.count);
-
-      		while(c-- > 0)
-      		{
-      			points.push(new google.maps.LatLng(Number(value.latitude), Number(value.longitude)))
-      		}
-      	});
-
-      	POINTS = points;
-
-      	initMap();
-      }
-
-      function initMap() {
-              var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 4,
-                center: {lat: 37.090, lng: -95.712},
-                mapTypeId: 'terrain'
-              });
-
-      		heatmap = new google.maps.visualization.HeatmapLayer({
-                data: POINTS,
-                map: map
-              });
-            }
+    }
 
 
-      function getData(action, data, callback)
-      {
-      	$.ajax({
-      		  url: "http://localhost:8080/SafeNeighborhoodService/"+action,
-      		  type: "get",
-      		  data: data,
-      		  complete: function (xhr, status) {
-      		      if (status === 'error' || !xhr.responseText) {
-      		          console.log('error');
-      		      }
-      		      else {
-      		       	callback(xhr.responseJSON);
-      		      }
-      		  }
-      		});
-      }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl12iD48YV7PlODYkQKd2kboKnsUQi4yw&libraries=visualization&callback=initMap"
+    type="text/javascript"></script>
 
-      
-    </script>
-     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl12iD48YV7PlODYkQKd2kboKnsUQi4yw&libraries=visualization&callback=initMap"
-  type="text/javascript"></script>
-    
-  </body>
+</body>
 </html>
