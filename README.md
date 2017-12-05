@@ -15,10 +15,10 @@ RDF and owl files:
 https://drive.google.com/drive/folders/1YT-oPVxgckaIvmUk2d1Yc467sOWqQjtb?usp=sharing
 
 Proposal:
-SER594_project_proposal_group2.docx
+SER594_group2_project_proposal.docx
 
 Presentation:
-594project.pdf
+SER594_group2_project_presentation.pdf
 
 Report:
 SER594_group2_project_report.pdf
