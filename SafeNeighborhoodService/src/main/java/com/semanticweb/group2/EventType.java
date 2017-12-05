@@ -7,7 +7,7 @@ public class EventType {
 	private String[] types = {"Crime", "Fire", "Disaster", "Disease"};
 	private String[][] categories = {{"Arson_Crime","DrugOffense","Murder","Rape","Theft"},
 	{"Arson_Fire","Basic","Wildlands"},
-	{"Earthquake","Hurricane","Tsunami","Volcano"},
+	{"Earthquake","Tsunami","Volcano"},
 	{"DIPHTHERIA","HEPATITIS_A","MEASELS","MUMPS","PERTUSSIS","POLIO","RUBELLA","SMALLPOX"}};
 	private int[] zipcodeSupport = {1,1,0,0};
 	private List<TypeData> typeData;

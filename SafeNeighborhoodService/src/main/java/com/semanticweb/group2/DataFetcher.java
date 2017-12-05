@@ -45,20 +45,6 @@ public class DataFetcher {
 	private String getEndpoint()
 	{
 		return fusekiServer+"/ds/query";
-		
-		/*if(type.equals("Crime"))
-			return fusekiServer+"/"+crimeDataset+"/query";
-			
-		if(type.equals("Fire"))
-			return fusekiServer+"/"+fireDataset+"/query";
-		
-		if(type.equals("Disaster"))
-			return fusekiServer+"/"+disasterDataset+"/query";
-		
-		if(type.equals("Disease"))
-			return fusekiServer+"/"+diseaseDataset+"/query";
-		
-		return null;*/
 	}	
 	
 	private String BuildFilter(String field, String[] filters)
@@ -132,7 +118,7 @@ public class DataFetcher {
 		zipcodeQuery += "?r sn:occured_at ?loc.";
 		zipcodeQuery += BuildFilter("?loc", locations);
 		zipcodeQuery += BuildFilter("?type", categories) + "}"; 
-		zipcodeQuery += "GROUP BY ?loc ?type";
+		zipcodeQuery += "GROUP BY ?loc ?type ";
 		zipcodeQuery += "ORDER BY ?location";
 		
 		
@@ -149,6 +135,7 @@ public class DataFetcher {
 		  queryStr.append("PREFIX rdf" + ": <" + "http://www.w3.org/1999/02/22-rdf-syntax-ns#" + "> ");
 				
 		  queryStr.append(queryRequest);
+		  System.out.println(queryStr.toString());
 		  QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, queryStr.toString());
 		  
 		  List<HeatMapData> queryResult = new ArrayList<HeatMapData>();
