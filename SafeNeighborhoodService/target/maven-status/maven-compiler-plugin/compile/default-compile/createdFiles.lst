@@ -1,6 +1,12 @@
 com\semanticweb\group2\Config.class
-com\semanticweb\group2\LatLong.class
-com\semanticweb\group2\Data.class
 com\semanticweb\group2\DataFetcher.class
+com\semanticweb\group2\EventType.class
 com\semanticweb\group2\Index.class
+com\semanticweb\group2\ChartDataList.class
+com\semanticweb\group2\TypeData.class
 com\semanticweb\group2\Location.class
+com\semanticweb\group2\PointData.class
+com\semanticweb\group2\LocationData.class
+com\semanticweb\group2\LatLong.class
+com\semanticweb\group2\ChartData.class
+com\semanticweb\group2\HeatMapData.class
