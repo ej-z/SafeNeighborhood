@@ -430,6 +430,7 @@
 
     function displayCharts(main) {
 
+    	$('#chartContainer').empty();
       for (var i = 0; i < main.length; i++) {
         var Data = []
         var chartType = main[i].Data.length == 1? 'column' : 'stackedColumn100'
